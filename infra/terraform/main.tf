@@ -464,7 +464,7 @@ resource "aws_iam_role_policy" "lambda_runtime" {
         { Effect = "Allow", Action = ["sns:Publish"], Resource = aws_sns_topic.notifications.arn },
         { Effect = "Allow", Action = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:GetQueueAttributes"], Resource = aws_sqs_queue.events.arn }
       ],
-      var.enable_ec2_fis_lab ? [{ Effect = "Allow", Action = ["fis:StartExperiment"], Resource = aws_fis_experiment_template.stop_instance[0].arn }] : []
+      var.enable_ec2_fis_lab ? [{ Effect = "Allow", Action = ["fis:StartExperiment"], Resource = "arn:aws:fis:${var.aws_region}:${data.aws_caller_identity.current.account_id}:experiment-template/${aws_fis_experiment_template.stop_instance[0].id}" }] : []
     )
   })
 }
