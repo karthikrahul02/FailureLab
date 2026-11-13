@@ -1,0 +1,88 @@
+{
+  "info": {
+    "name": "FailureLab API",
+    "description": "Local API collection for the FailureLab cloud resilience experiment platform. For AWS deployments, set id_token to a valid Cognito ID token and base_url to the API Gateway URL plus /api/v1.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{id_token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000/api/v1" },
+    { "key": "id_token", "value": "" },
+    { "key": "api_key", "value": "" },
+    { "key": "experiment_id", "value": "" },
+    { "key": "compare_experiment_ids", "value": "[]" }
+  ],
+  "item": [
+    {
+      "name": "Health & Dashboard",
+      "item": [
+        {
+          "name": "Health",
+          "request": { "method": "GET", "url": "http://localhost:8000/health" }
+        },
+        {
+          "name": "Dashboard summary",
+          "request": { "method": "GET", "header": [{ "key": "X-API-Key", "value": "{{api_key}}", "disabled": true }], "url": "{{base_url}}/dashboard/summary" }
+        },
+        {
+          "name": "Infrastructure topology",
+          "request": { "method": "GET", "url": "{{base_url}}/dashboard/infrastructure" }
+        }
+      ]
+    },
+    {
+      "name": "Experiments",
+      "item": [
+        {
+          "name": "Create latency experiment",
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Experiment accepted', function () { pm.response.to.have.status(202); });",
+              "const body = pm.response.json();",
+              "if (body.id) pm.collectionVariables.set('experiment_id', body.id);"
+            ] }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Payment service latency experiment\",\n  \"target\": \"payments\",\n  \"scenario\": \"latency_injection\",\n  \"duration_seconds\": 30,\n  \"intensity\": 65,\n  \"hypothesis\": \"Payment requests should remain bounded and recover after injected latency.\"\n}" },
+            "url": "{{base_url}}/experiments"
+          }
+        },
+        {
+          "name": "List experiments",
+          "request": { "method": "GET", "url": "{{base_url}}/experiments?limit=50" }
+        },
+        {
+          "name": "Get experiment",
+          "request": { "method": "GET", "url": "{{base_url}}/experiments/{{experiment_id}}" }
+        },
+        {
+          "name": "Cancel experiment",
+          "request": { "method": "POST", "url": "{{base_url}}/experiments/{{experiment_id}}/cancel" }
+        },
+        {
+          "name": "Compare experiments",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"experiment_ids\": {{compare_experiment_ids}}\n}" },
+            "url": "{{base_url}}/experiments/compare"
+          }
+        },
+        {
+          "name": "Download PDF report",
+          "request": { "method": "GET", "url": "{{base_url}}/experiments/{{experiment_id}}/report.pdf" }
+        },
+        {
+          "name": "Get JSON report",
+          "request": { "method": "GET", "url": "{{base_url}}/experiments/{{experiment_id}}/report.json" }
+        }
+      ]
+    }
+  ]
+}

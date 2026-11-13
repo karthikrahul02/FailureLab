@@ -1,0 +1,10 @@
+import {Navigate,Route,Routes} from 'react-router-dom'
+import {useAuth} from './context/AuthContext'
+import Layout from './components/Layout'
+import Login from './pages/Login'
+import Overview from './pages/Overview'
+import Infrastructure from './pages/Infrastructure'
+import Experiments from './pages/Experiments'
+import ExperimentDetail from './pages/ExperimentDetail'
+import Compare from './pages/Compare'
+export default function App(){const {user}=useAuth();if(!user)return <Login/>;return <Routes><Route element={<Layout/>}><Route path="/" element={<Overview/>}/><Route path="/infrastructure" element={<Infrastructure/>}/><Route path="/experiments" element={<Experiments/>}/><Route path="/experiments/:id" element={<ExperimentDetail/>}/><Route path="/compare" element={<Compare/>}/></Route><Route path="*" element={<Navigate to="/" replace/>}/></Routes>}

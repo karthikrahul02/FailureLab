@@ -1,0 +1,10 @@
+import {useState} from 'react'
+import type {FormEvent} from 'react'
+import {useNavigate} from 'react-router-dom'
+import {Activity,ArrowRight,ShieldCheck} from 'lucide-react'
+import {useAuth} from '../context/AuthContext'
+export default function Login(){
+ const {signIn,demoSignIn}=useAuth();const navigate=useNavigate();const [email,setEmail]=useState('engineer@failurelab.dev');const [password,setPassword]=useState('');const [error,setError]=useState('');const [busy,setBusy]=useState(false);const demo=(import.meta.env.VITE_AUTH_MODE||'demo')==='demo'
+ const submit=async(e:FormEvent)=>{e.preventDefault();setBusy(true);setError('');try{await signIn(email,password);navigate('/')}catch(err){setError(err instanceof Error?err.message:'Sign-in failed')}finally{setBusy(false)}}
+ return <div className="login-page"><div className="login-card"><div className="brand"><div className="brand-mark"><ShieldCheck size={20}/></div><div><div className="brand-name">failurelab<span>.</span></div><div className="brand-sub">RESILIENCE ENGINEERING</div></div></div><div className="eyebrow"><Activity size={14}/> CLOUD RESILIENCE WORKSPACE</div><h1>Know how your systems<br/><em>fail before they do.</em></h1><p>Run controlled experiments, observe failure behaviour, and turn telemetry into resilience improvements.</p>{demo?<button className="primary-button wide" onClick={()=>{demoSignIn();navigate('/')}}>Enter demo workspace <ArrowRight size={16}/></button>:<form onSubmit={submit} className="login-form"><label>Email<input type="email" value={email} onChange={e=>setEmail(e.target.value)} required/></label><label>Password<input type="password" value={password} onChange={e=>setPassword(e.target.value)} required/></label>{error&&<div className="error-box">{error}</div>}<button className="primary-button wide" disabled={busy}>{busy?'Signing in…':'Sign in'} <ArrowRight size={16}/></button></form>}<div className="login-safe"><ShieldCheck size={15}/>{demo?'Demo mode · isolated local simulations':'Authenticated through Amazon Cognito'}</div></div><div className="login-footer">CONTROLLED EXPERIMENTS. MEASURABLE RESILIENCE.</div></div>
+}

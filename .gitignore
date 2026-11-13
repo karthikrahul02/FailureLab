@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+backend/.env
+backend/data/
+backend/reports/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.production
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+infra/terraform/.artifacts/
+infra/terraform/*.zip
+crash.log
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+infra/terraform/terraform.tfvars
+*.tfplan
+frontend/.env
+data/
+*.tsbuildinfo

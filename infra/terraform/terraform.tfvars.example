@@ -1,0 +1,18 @@
+aws_region          = "ap-south-1"
+environment         = "lab"
+project_name        = "failurelab"
+deploy_backend      = false
+backend_image_tag   = "v1"
+backend_cpu         = 512
+backend_memory      = 1024
+backend_desired_count = 1
+
+# Keep both false for the first cloud deployment. These are deliberately opt-in.
+enable_ec2_fis_lab  = false
+enable_real_fis     = false
+
+# Add local/staging frontend origins only when needed.
+api_allowed_origins = []
+
+# Optional AI narrative analysis through Amazon Bedrock Converse. Keep blank to use rules + IsolationForest only.
+bedrock_model_id = ""
